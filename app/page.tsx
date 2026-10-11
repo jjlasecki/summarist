@@ -1,10 +1,28 @@
+"use client";
+import { useEffect, useState } from "react";
+import LoginModal from "@/components/LoginModal";
 import "./home.css";
 import { AiFillFileText, AiFillBulb, AiFillAudio } from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function Home() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <nav className="nav">
@@ -18,7 +36,30 @@ export default function Home() {
           </figure>
 
           <ul className="nav__list--wrapper">
-            <li className="nav__list nav__list--login">Login</li>
+            {!authLoading && (
+              <li
+                className="nav__list nav__list--login"
+                onClick={() => {
+                  if (!user) setIsLoginOpen(true);
+                }}
+              >
+                {user ? "My Account" : "Login"}
+              </li>
+            )}
+            {!authLoading && user && (
+              <li
+                className="nav__list nav__list--login"
+                onClick={async () => {
+                  try {
+                    await signOut(auth);
+                  } catch (error) {
+                    console.error("Logout failed:", error);
+                  }
+                }}
+              >
+                Logout
+              </li>
+            )}
             <li className="nav__list nav__list--mobile">About</li>
             <li className="nav__list nav__list--mobile">Contact</li>
             <li className="nav__list nav__list--mobile">Help</li>
@@ -45,7 +86,12 @@ export default function Home() {
                     and even people who don&apos;t like to read.
                   </div>
 
-                  <button className="btn home__cta--btn">Login</button>
+                  <button
+                    className="btn home__cta--btn"
+                    onClick={() => setIsLoginOpen(true)}
+                  >
+                    Login
+                  </button>
                 </div>
 
                 <figure className="landing__image--mask">
@@ -253,7 +299,12 @@ export default function Home() {
               </div>
 
               <div className="reviews__btn--wrapper">
-                <button className="btn home__cta--btn">Login</button>
+                <button
+                  className="btn home__cta--btn"
+                  onClick={() => setIsLoginOpen(true)}
+                >
+                  Login
+                </button>
               </div>
             </div>
           </div>
@@ -378,6 +429,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} />}
     </>
   );
 }
