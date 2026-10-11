@@ -75,3 +75,21 @@
 .auth__submit:hover {
   background-color: #20c96d;
 }
+
+.auth__google {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  color: #333;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth__google:hover {
+  background-color: #f5f5f5;
+}

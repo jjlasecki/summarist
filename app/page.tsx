@@ -88,9 +88,18 @@ export default function Home() {
 
                   <button
                     className="btn home__cta--btn"
-                    onClick={() => setIsLoginOpen(true)}
+                    disabled={authLoading}
+                    onClick={() => {
+                      if (!user) {
+                        setIsLoginOpen(true);
+                      }
+                    }}
                   >
-                    Login
+                    {authLoading
+                      ? "Loading..."
+                      : user
+                        ? "Explore Books"
+                        : "Login"}
                   </button>
                 </div>
 
@@ -301,9 +310,18 @@ export default function Home() {
               <div className="reviews__btn--wrapper">
                 <button
                   className="btn home__cta--btn"
-                  onClick={() => setIsLoginOpen(true)}
+                  disabled={authLoading}
+                  onClick={() => {
+                    if (!user) {
+                      setIsLoginOpen(true);
+                    }
+                  }}
                 >
-                  Login
+                  {authLoading
+                    ? "Loading..."
+                    : user
+                      ? "Explore Books"
+                      : "Login"}
                 </button>
               </div>
             </div>

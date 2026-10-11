@@ -3,6 +3,8 @@ import { useState } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -29,6 +31,17 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       onClose();
     } catch (error) {
       console.error("Authentication failed:", error);
+    }
+  };
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+
+      await signInWithPopup(auth, provider);
+
+      onClose();
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
     }
   };
 
@@ -67,6 +80,13 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             {isSignUp ? "Sign up" : "Log in"}
           </button>
         </form>
+        <button
+          type="button"
+          className="auth__google"
+          onClick={handleGoogleLogin}
+        >
+          Continue with Google
+        </button>
         <p className="auth__toggle">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
           <button type="button" onClick={() => setIsSignUp(!isSignUp)}>
