@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 
 type LoginModalProps = {
   onClose: () => void;
@@ -20,6 +21,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const router = useRouter();
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
@@ -36,6 +38,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       }
 
       onClose();
+      router.push("/for-you");
     } catch (error) {
       console.error("Authentication failed:", error);
 
@@ -78,6 +81,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       await signInWithPopup(auth, provider);
 
       onClose();
+      router.push("/for-you");
     } catch (error) {
       console.error("Google sign-in failed:", error);
     }
@@ -88,6 +92,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
     try {
       await signInAnonymously(auth);
       onClose();
+      router.push("/for-you");
     } catch (error) {
       console.error("Guest login failed:", error);
       setErrorMessage("Unable to continue as a guest. Please try again.");
