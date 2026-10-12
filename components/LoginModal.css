@@ -105,3 +105,15 @@
   line-height: 1.5;
   text-align: left;
 }
+
+.auth__success {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #e8f8ee;
+  color: #176b3a;
+  border: 1px solid #b7e4c7;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
