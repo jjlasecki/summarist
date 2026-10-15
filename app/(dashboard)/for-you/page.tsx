@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import type { Book } from "@/types/book";
 import BookCard from "@/components/BookCard";
+import Image from "next/image";
 
 export default function ForYouPage() {
   const router = useRouter();
@@ -122,11 +123,15 @@ export default function ForYouPage() {
           </div>
 
           {/* Book cover */}
+
           <div className="flex w-1/4 justify-center px-5">
-            <img
+            <Image
               src={selectedBook.imageLink}
               alt={selectedBook.title}
-              className="w-28 object-contain"
+              width={112}
+              height={160}
+              unoptimized
+              className="w-28 h-auto object-contain"
             />
           </div>
 
@@ -156,7 +161,7 @@ export default function ForYouPage() {
           Recommended For You
         </h2>
 
-        <p className="mb-8 text-gray-600">We think you'll like these</p>
+        <p className="mb-8 text-gray-600">We think you&apos;ll like these</p>
 
         <div className="flex gap-6 overflow-x-auto pt-6 pb-4">
           {recommendedBooks.map((book) => (

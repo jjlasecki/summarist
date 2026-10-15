@@ -1,5 +1,7 @@
 import BookPill from "@/components/BookPill";
 import type { Book } from "@/types/book";
+import Image from "next/image";
+import Link from "next/link";
 
 interface BookCardProps {
   book: Book;
@@ -7,12 +9,18 @@ interface BookCardProps {
 
 export default function BookCard({ book }: BookCardProps) {
   return (
-    <div className="w-44 flex-shrink-0 cursor-pointer">
+    <Link
+      href={`/book/${book.id}`}
+      className="block w-44 flex-shrink-0 cursor-pointer"
+    >
       <div className="relative mb-3">
         <BookPill subscriptionRequired={book.subscriptionRequired} />
-        <img
+        <Image
           src={book.imageLink}
           alt={book.title}
+          width={176}
+          height={176}
+          unoptimized
           className="h-44 w-full object-contain"
         />
       </div>
@@ -22,6 +30,6 @@ export default function BookCard({ book }: BookCardProps) {
       <p className="mt-1 text-sm text-gray-600">{book.author}</p>
 
       <p className="mt-2 line-clamp-2 text-sm text-gray-500">{book.subTitle}</p>
-    </div>
+    </Link>
   );
 }
