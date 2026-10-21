@@ -4,6 +4,9 @@ import Image from "next/image";
 import { FaFileAlt, FaSeedling, FaHandshake } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import Link from "next/link";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function ChoosePlanPage() {
   const [selectedPlan, setSelectedPlan] = useState<"yearly" | "monthly">(
@@ -11,6 +14,56 @@ export default function ChoosePlanPage() {
   );
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
+
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleCheckout = async () => {
+    if (isCheckingOut) return;
+
+    if (!user) {
+      alert("Please log in before subscribing.");
+      return;
+    }
+
+    setIsCheckingOut(true);
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ plan: selectedPlan }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to start checkout");
+      }
+
+      const data = await response.json();
+
+      if (!data.url) {
+        throw new Error("Stripe did not return a checkout URL");
+      }
+
+      window.location.assign(data.url);
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("Unable to start checkout. Please try again.");
+      setIsCheckingOut(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +89,13 @@ export default function ChoosePlanPage() {
 
   return (
     <main className="min-h-screen bg-white text-[#032b41]">
+      <Link
+        href="/for-you"
+        className="absolute left-6 top-6 z-10 rounded px-3 py-2 text-sm font-semibold text-white transition hover:underline"
+      >
+        ← Back to For You
+      </Link>
+
       <section className="relative rounded-b-[200px] bg-[#032b41] px-6 pb-80 pt-12 text-center text-white md:rounded-b-[250px]">
         <h1 className="mx-auto max-w-4xl text-4xl font-bold leading-tight md:text-5xl">
           Get unlimited access to many amazing books to read
@@ -144,6 +204,8 @@ export default function ChoosePlanPage() {
         >
           <button
             type="button"
+            onClick={handleCheckout}
+            disabled={isCheckingOut}
             className="w-full max-w-[300px] rounded bg-[#2bd67b] px-6 py-3 text-center text-black transition hover:bg-[#25c46f]"
           >
             {selectedPlan === "yearly"
@@ -216,6 +278,8 @@ export default function ChoosePlanPage() {
           <div className="mx-auto flex max-w-[680px] flex-col items-center">
             <button
               type="button"
+              onClick={handleCheckout}
+              disabled={isCheckingOut}
               className="w-full max-w-[300px] rounded bg-[#2bd67b] px-6 py-3 text-center text-black transition hover:bg-[#25c46f]"
             >
               {selectedPlan === "yearly"
