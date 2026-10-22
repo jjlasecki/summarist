@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import type { Book } from "@/types/book";
 import BookCard from "@/components/BookCard";
+import BookCardSkeleton from "@/components/BookCardSkeleton";
+import SelectedBookSkeleton from "@/components/SelectedBookSkeleton";
 import Image from "next/image";
 
 export default function ForYouPage() {
@@ -13,8 +15,11 @@ export default function ForYouPage() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [selectedLoading, setSelectedLoading] = useState(true);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(true);
   const [suggestedBooks, setSuggestedBooks] = useState<Book[]>([]);
+  const [suggestedLoading, setSuggestedLoading] = useState(true);
 
   useEffect(() => {
     async function fetchSelectedBook() {
@@ -32,6 +37,8 @@ export default function ForYouPage() {
         console.log("Selected book:", data);
       } catch (error) {
         console.error("Error fetching selected book:", error);
+      } finally {
+        setSelectedLoading(false);
       }
     }
 
@@ -70,6 +77,8 @@ export default function ForYouPage() {
         console.log("Recommended books:", data);
       } catch (error) {
         console.error("Error fetching recommended books:", error);
+      } finally {
+        setRecommendedLoading(false);
       }
     }
 
@@ -91,10 +100,11 @@ export default function ForYouPage() {
 
         const data: Book[] = await response.json();
         setSuggestedBooks(data);
-
         console.log("Suggested books:", data);
       } catch (error) {
         console.error("Error fetching suggested books:", error);
+      } finally {
+        setSuggestedLoading(false);
       }
     }
 
@@ -104,7 +114,24 @@ export default function ForYouPage() {
   }, [user]);
 
   if (authLoading || !user) {
-    return <p>Loading...</p>;
+    return (
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <h1 className="mb-4 text-2xl font-bold text-[#032b41]">
+          Selected just for you
+        </h1>
+
+        <SelectedBookSkeleton />
+
+        <div className="mt-8">
+          <div className="mb-4 h-7 w-56 animate-pulse rounded bg-gray-200" />
+          <div className="flex gap-6 overflow-hidden pt-6 pb-4">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <BookCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -113,7 +140,9 @@ export default function ForYouPage() {
         Selected just for you
       </h1>
 
-      {selectedBook ? (
+      {selectedLoading ? (
+        <SelectedBookSkeleton />
+      ) : selectedBook ? (
         <div className="flex max-w-[680px] items-center rounded bg-[#fdf1d7] p-6">
           {/* Subtitle */}
           <div className="w-2/5 self-stretch border-r border-gray-300 pr-6">
@@ -153,7 +182,7 @@ export default function ForYouPage() {
           </div>
         </div>
       ) : (
-        <p>Loading selected book...</p>
+        <p>Unable to load selected book.</p>
       )}
       {/* Recommended Books */}
       <section className="mt-8">
@@ -164,9 +193,13 @@ export default function ForYouPage() {
         <p className="mb-8 text-gray-600">We think you&apos;ll like these</p>
 
         <div className="flex gap-6 overflow-x-auto pt-6 pb-4">
-          {recommendedBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
+          {recommendedLoading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <BookCardSkeleton key={index} />
+              ))
+            : recommendedBooks.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
         </div>
       </section>
 
@@ -179,9 +212,13 @@ export default function ForYouPage() {
         <p className="mb-8 text-gray-600">Browse more books you might enjoy</p>
 
         <div className="flex gap-6 overflow-x-auto pt-6 pb-4">
-          {suggestedBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
+          {suggestedLoading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <BookCardSkeleton key={index} />
+              ))
+            : suggestedBooks.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
         </div>
       </section>
     </main>

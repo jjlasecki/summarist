@@ -8,6 +8,7 @@ import { auth, db } from "@/lib/firebase";
 import Image from "next/image";
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import BookDetailsSkeleton from "@/components/BookDetailsSkeleton";
 
 export default function BookDetailsPage() {
   const params = useParams();
@@ -98,7 +99,7 @@ export default function BookDetailsPage() {
   };
 
   if (loading) {
-    return <p className="p-8">Loading book...</p>;
+    return <BookDetailsSkeleton />;
   }
 
   if (error) {

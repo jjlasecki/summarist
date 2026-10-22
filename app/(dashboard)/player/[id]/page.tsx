@@ -6,6 +6,7 @@ import type { Book } from "@/types/book";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { MdReplay10, MdForward10 } from "react-icons/md";
 import Image from "next/image";
+import PlayerSkeleton from "@/components/PlayerSkeleton";
 
 export default function PlayerPage() {
   const params = useParams();
@@ -82,7 +83,7 @@ export default function PlayerPage() {
   };
 
   if (loading) {
-    return <p className="p-8">Loading book...</p>;
+    return <PlayerSkeleton />;
   }
 
   if (error) {

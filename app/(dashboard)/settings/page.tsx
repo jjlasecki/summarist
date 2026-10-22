@@ -6,6 +6,7 @@ import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import LoginModal from "@/components/LoginModal";
 import Image from "next/image";
+import SettingsSkeleton from "@/components/SettingsSkeleton";
 
 export default function SettingsPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -73,7 +74,7 @@ export default function SettingsPage() {
   }, [user]);
 
   if (authLoading) {
-    return <div>Loading...</div>;
+    return <SettingsSkeleton />;
   }
 
   if (!user) {
@@ -123,7 +124,10 @@ export default function SettingsPage() {
         </h2>
 
         {planLoading ? (
-          <p>Checking subscription...</p>
+          <div className="animate-pulse" aria-label="Loading subscription">
+            <div className="mb-3 h-5 w-24 rounded bg-gray-200" />
+            <div className="h-9 w-44 rounded bg-gray-200" />
+          </div>
         ) : (
           <>
             <p className="font-semibold">
