@@ -8,3 +8,57 @@
   min-width: 0;
   padding: 32px;
 }
+
+@media (max-width: 768px) {
+  .dashboard__content {
+    width: 100%;
+    padding: 0;
+  }
+
+  .dashboard > .sidebar {
+    display: none;
+  }
+}
+
+/* Mobile menu button */
+.mobile-menu-button {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    display: block;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: #032b41;
+    font-size: 28px;
+    cursor: pointer;
+  }
+
+  .mobile-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-sidebar-panel {
+    position: fixed;
+    top: 0;
+    bottom: 80px;
+    left: 0;
+    z-index: 101;
+    width: 80%;
+    max-width: 440px;
+  }
+
+  .mobile-sidebar-panel .sidebar {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    background: #f7fafa;
+  }
+}
