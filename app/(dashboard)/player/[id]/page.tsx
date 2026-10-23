@@ -7,9 +7,11 @@ import { FaPlay, FaPause } from "react-icons/fa";
 import { MdReplay10, MdForward10 } from "react-icons/md";
 import Image from "next/image";
 import PlayerSkeleton from "@/components/PlayerSkeleton";
+import { useFontSize } from "@/components/FontSizeContext";
 
 export default function PlayerPage() {
   const params = useParams();
+  const { fontSize } = useFontSize();
   const id = params.id;
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,10 +99,13 @@ export default function PlayerPage() {
   return (
     <main className="mx-auto max-w-4xl px-8 pb-28 pt-8 text-[#032b41]">
       <h1 className="border-b pb-4 text-xl font-bold">{book.title}</h1>
-      <div className="mt-6 whitespace-pre-line text-sm leading-7">
+      <div
+        className="mt-6 whitespace-pre-line leading-7"
+        style={{ fontSize: `${fontSize}px` }}
+      >
         {book.summary}
       </div>
-      <div className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-center gap-4 bg-[#032b41] p-4 text-white md:left-60 md:w-[calc(100%-15rem)]">
+      <div className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-center gap-4 bg-[#032b41] p-4 text-white">
         <div className="flex items-center gap-3 md:absolute md:left-8">
           <Image
             src={book.imageLink}

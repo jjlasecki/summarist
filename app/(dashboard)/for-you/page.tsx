@@ -143,17 +143,19 @@ export default function ForYouPage() {
       {selectedLoading ? (
         <SelectedBookSkeleton />
       ) : selectedBook ? (
-        <div className="flex max-w-[680px] items-center rounded bg-[#fdf1d7] p-6">
+        <div className="flex max-w-[680px] flex-col rounded bg-[#fdf1d7] p-4 md:flex-row md:items-center md:p-6">
           {/* Subtitle */}
-          <div className="w-2/5 self-stretch border-r border-gray-300 pr-6">
+          <div className="w-full md:w-2/5 md:self-stretch md:border-r md:border-gray-300 md:pr-6">
             <p className="text-base leading-5 text-[#032b41]">
               {selectedBook.subTitle}
             </p>
           </div>
 
+          <div className="mt-4 flex w-full items-center gap-4 md:contents">
+
           {/* Book cover */}
 
-          <div className="flex w-1/4 justify-center px-5">
+          <div className="flex w-32 shrink-0 justify-center md:w-1/4 md:shrink">
             <Image
               src={selectedBook.imageLink}
               alt={selectedBook.title}
@@ -178,6 +180,7 @@ export default function ForYouPage() {
               <span className="text-sm font-semibold text-[#032b41]">
                 Audio duration coming soon
               </span>
+            </div>
             </div>
           </div>
         </div>
